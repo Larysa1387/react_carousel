@@ -70,7 +70,7 @@ const Carousel: React.FC<CarouselProps> = ({
           className="Carousel__controls--button"
           type="button"
           onClick={handlePrev}
-          disabled={startIndex === 0 && !infinite}
+          disabled={!infinite && startIndex === 0}
         >
           Prev
         </button>
@@ -79,7 +79,7 @@ const Carousel: React.FC<CarouselProps> = ({
           data-cy="next"
           type="button"
           onClick={handleNext}
-          disabled={startIndex === images.length - frameSize && !infinite}
+          disabled={!infinite && startIndex === images.length - frameSize}
         >
           Next
         </button>

@@ -75,6 +75,7 @@ class App extends React.Component<{}, State> {
           <label htmlFor="frameId">Frame size:</label>
           <input
             min={1}
+            max={images.length}
             id="frameId"
             name="frameSize"
             type="number"
@@ -84,6 +85,7 @@ class App extends React.Component<{}, State> {
           <label htmlFor="stepId">Step:</label>
           <input
             min={1}
+            max={images.length}
             id="stepId"
             name="step"
             type="number"
