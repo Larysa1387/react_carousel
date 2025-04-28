@@ -1,26 +1,99 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Carousel.scss';
+interface CarouselProps {
+  images: string[];
+  step: number;
+  frameSize: number;
+  itemWidth: number;
+  animationDuration: number;
+  infinite: boolean;
+}
 
-const Carousel: React.FC = () => (
-  <div className="Carousel">
-    <ul className="Carousel__list">
-      <li>
-        <img src="./img/1.png" alt="1" />
-      </li>
-      <li>
-        <img src="./img/1.png" alt="2" />
-      </li>
-      <li>
-        <img src="./img/1.png" alt="3" />
-      </li>
-      <li>
-        <img src="./img/1.png" alt="4" />
-      </li>
-    </ul>
+const Carousel: React.FC<CarouselProps> = ({
+  images,
+  step,
+  frameSize,
+  itemWidth,
+  animationDuration,
+  infinite,
+}) => {
+  const [startIndex, setStartIndex] = useState(0);
 
-    <button type="button">Prev</button>
-    <button type="button">Next</button>
-  </div>
-);
+  const handleNext = () => {
+    setStartIndex(prevIndex => {
+      const newIndex = prevIndex + step;
+
+      if (infinite) {
+        if (newIndex + frameSize > images.length) {
+          return (newIndex + images.length) % images.length;
+        }
+
+        return newIndex % images.length;
+      }
+
+      return Math.min(newIndex, images.length - frameSize);
+    });
+  };
+
+  const handlePrev = () => {
+    setStartIndex(prevIndex => {
+      const newIndex = prevIndex - step;
+
+      if (infinite) {
+        return (newIndex + images.length) % images.length;
+      }
+
+      if (newIndex < 0) {
+        return images.length - frameSize;
+      }
+
+      return Math.max(newIndex, 0);
+    });
+  };
+
+  return (
+    <div className="Carousel">
+      <div
+        className="Carousel__frame"
+        style={{
+          width: itemWidth * frameSize,
+        }}
+      >
+        <ul
+          className="Carousel__list"
+          style={{
+            transform: `translateX(-${startIndex * itemWidth}px)`,
+            transition: `transform ${animationDuration}ms ease-in-out`,
+          }}
+        >
+          {images.map((image, index) => (
+            <li key={index}>
+              <img src={image} alt={`image ${index}`} width={itemWidth} />
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className="Carousel__controls">
+        <button
+          className="Carousel__controls--button"
+          type="button"
+          onClick={handlePrev}
+          disabled={startIndex === 0 && !infinite}
+        >
+          Prev
+        </button>
+        <button
+          className="Carousel__controls--button"
+          data-cy="next"
+          type="button"
+          onClick={handleNext}
+          disabled={startIndex === images.length - frameSize && !infinite}
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  );
+};
 
 export default Carousel;
